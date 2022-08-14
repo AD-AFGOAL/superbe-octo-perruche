@@ -13,17 +13,71 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
-from models import db, app, Venue, Artist, Show
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
 
-
-
+app.config.from_object('config')
+app = Flask(__name__)
+moment = Moment(app) 
+db = SQLAlchemy(app)
 # TODO: connect to a local postgresql database
 migration = Migrate(app, db)
 
+#----------------------------------------------------------------------------#
+# Models.
+#----------------------------------------------------------------------------#
 
+class Venue(db.Model):
+    __tablename__ = 'Venue'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    city = db.Column(db.String(120), nullable=False)
+    state = db.Column(db.String(120), nullable=False)
+    address = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(120), nullable=False)
+    image_link = db.Column(db.String(500), nullable=False)
+    facebook_link = db.Column(db.String(120), nullable=False)
+   
+
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+def __repr__(self):
+     return f'<venues ID: {self.id}, name: {self.name}, city: {self.city}, state: {self.state}, address: {self.address}, phone: {self.phone}, image_link: {self.image_link}, facebook_link: {self.facebook_link}>'
+
+class Artist(db.Model):
+    __tablename__ = 'Artist'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    city = db.Column(db.String(120), nullable=False)
+    state = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(120), nullable=False)
+    genres = db.Column(db.String(120), nullable=False)
+    image_link = db.Column(db.String(500), nullable=False)
+    facebook_link = db.Column(db.String(120), nullable=False)
+    
+
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+def __repr__(self):
+     return f'<Artist ID: {self.id}, name: {self.name}, city: {self.city}, state: {self.state}, genres: {self.genres}, phone: {self.phone}, image_link: {self.image_link}, facebook_link: {self.facebook_link}>'
+
+# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
+
+
+#----------------------------------------------------------------------------#
+# Filters.
+#----------------------------------------------------------------------------#
+
+def format_datetime(value, format='medium'):
+  date = dateutil.parser.parse(value)
+  if format == 'full':
+      format="EEEE MMMM, d, y 'at' h:mma"
+  elif format == 'medium':
+      format="EE MM, dd, y h:mma"
+  return babel.dates.format_datetime(date, format, locale='en')
+
+app.jinja_env.filters['datetime'] = format_datetime
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
@@ -41,15 +95,15 @@ def venues():
   # TODO: replace with real venues data.
   #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
   data=[{
-    "city": "San Francisco",
-    "state": "CA",
+    "city": "Douala",
+    "state": "Cameroun",
     "venues": [{
       "id": 1,
-      "name": "The Musical Hop",
+      "name": "Gospelgrp",
       "num_upcoming_shows": 0,
     }, {
       "id": 3,
-      "name": "Park Square Live Music & Coffee",
+      "name": "musicforlife",
       "num_upcoming_shows": 1,
     }]
   }, {
@@ -57,7 +111,7 @@ def venues():
     "state": "NY",
     "venues": [{
       "id": 2,
-      "name": "The Dueling Pianos Bar",
+      "name": "Theone",
       "num_upcoming_shows": 0,
     }]
   }]
@@ -72,7 +126,13 @@ def search_venues():
     "count": 1,
     "data": [{
       "id": 2,
-      "name": "The Dueling Pianos Bar",
+      "name": "Theone",
+      "num_upcoming_shows": 0,
+    }],
+    "count": 2,
+    "data": [{
+      "id":1,
+      "name": "Gospelgrp",
       "num_upcoming_shows": 0,
     }]
   }
@@ -84,20 +144,20 @@ def show_venue(venue_id):
   # TODO: replace with real venue data from the venues table, using venue_id
   data1={
     "id": 1,
-    "name": "The Musical Hop",
+    "name": "Gospelgrp",
     "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
-    "address": "1015 Folsom Street",
-    "city": "San Francisco",
-    "state": "CA",
-    "phone": "123-123-1234",
-    "website": "https://www.themusicalhop.com",
+    "address": "1015 bonanjo",
+    "city": "Douala",
+    "state": "Cameroun",
+    "phone": "693-45-67-45",
+    "website": "https://www.gospelgrp.com",
     "facebook_link": "https://www.facebook.com/TheMusicalHop",
     "seeking_talent": True,
     "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
     "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
     "past_shows": [{
       "artist_id": 4,
-      "artist_name": "Guns N Petals",
+      "artist_name": "mazaria nelly",
       "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
       "start_time": "2019-05-21T21:30:00.000Z"
     }],
