@@ -39,6 +39,17 @@ def upgrade():
     op.alter_column('Venue', 'facebook_link',
                existing_type=sa.VARCHAR(length=120),
                nullable=False)
+    op.alter_column('Venue', 'website_link',
+               existing_type=sa.VARCHAR(length=120),
+               nullable=False)
+    op.alter_column('Venue', 'seeking_description',
+               existing_type=sa.VARCHAR(length=120),
+               nullable=False)
+    op.alter_column('artists', 'seeking_description',
+               existing_type=sa.VARCHAR(length=500),
+               nullable=False)
+    
+    
     # ### end Alembic commands ###
 
 
