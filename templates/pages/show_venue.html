@@ -4,30 +4,30 @@
 <div class="row">
 	<div class="col-sm-6">
 		<h1 class="monospace">
-			{{ venue.name }}
+			{{ venues.name }}
 		</h1>
 		<p class="subtitle">
-			ID: {{ venue.id }}
+			ID: {{ venues.id }}
 		</p>
 		<div class="genres">
-			{% for genre in venue.genres %}
+			{% for genre in venues.genres %}
 			<span class="genre">{{ genre }}</span>
 			{% endfor %}
 		</div>
 		<p>
-			<i class="fas fa-globe-americas"></i> {{ venue.city }}, {{ venue.state }}
+			<i class="fas fa-globe-americas"></i> {{ venues.city }}, {{ venues.state }}
 		</p>
 		<p>
-			<i class="fas fa-map-marker"></i> {% if venue.address %}{{ venue.address }}{% else %}No Address{% endif %}
+			<i class="fas fa-map-marker"></i> {% if venues.address %}{{ venues.address }}{% else %}No Address{% endif %}
 		</p>
 		<p>
-			<i class="fas fa-phone-alt"></i> {% if venue.phone %}{{ venue.phone }}{% else %}No Phone{% endif %}
+			<i class="fas fa-phone-alt"></i> {% if venues.phone %}{{ venues.phone }}{% else %}No Phone{% endif %}
 		</p>
 		<p>
-			<i class="fas fa-link"></i> {% if venue.website %}<a href="{{ venue.website }}" target="_blank">{{ venue.website }}</a>{% else %}No Website{% endif %}
+			<i class="fas fa-link"></i> {% if venues.website %}<a href="{{ venues.website }}" target="_blank">{{ venue.website }}</a>{% else %}No Website{% endif %}
 		</p>
 		<p>
-			<i class="fab fa-facebook-f"></i> {% if venue.facebook_link %}<a href="{{ venue.facebook_link }}" target="_blank">{{ venue.facebook_link }}</a>{% else %}No Facebook Link{% endif %}
+			<i class="fab fa-facebook-f"></i> {% if venues.facebook_link %}<a href="{{ venues.facebook_link }}" target="_blank">{{ venue.facebook_link }}</a>{% else %}No Facebook Link{% endif %}
 		</p>
 		{% if venue.seeking_talent %}
 		<div class="seeking">
@@ -43,7 +43,7 @@
 		{% endif %}
 	</div>
 	<div class="col-sm-6">
-		<img src="{{ venue.image_link }}" alt="Venue Image" />
+		<img src="{{ venues.image_link }}" alt="Venues Image" />
 	</div>
 </div>
 <section>
@@ -66,8 +66,8 @@
 		{%for show in venue.past_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
-				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
-				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
+				<img src="{{ show.artists_image_link }}" alt="Show Artist Image" />
+				<h5><a href="/artists/{{ show.artists_id }}">{{ show.artist_name }}</a></h5>
 				<h6>{{ show.start_time|datetime('full') }}</h6>
 			</div>
 		</div>
@@ -75,7 +75,7 @@
 	</div>
 </section>
 
-<a href="/venues/{{ venue.id }}/edit"><button class="btn btn-primary btn-lg">Edit</button></a>
+<a href="/venues/{{ venues.id }}/edit"><button class="btn btn-primary btn-lg">Edit</button></a>
 
 {% endblock %}
 

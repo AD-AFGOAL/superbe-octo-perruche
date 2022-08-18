@@ -1,9 +1,11 @@
 from datetime import datetime
-from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
-from wtforms.validators import DataRequired, AnyOf, URL
+from xml.dom import ValidationErr
+from flask_wtf import FlaskForm
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, SubmitField
+from wtforms.validators import DataRequired, AnyOf, URL, ValidationError
+import re
 
-class ShowForm(Form):
+class ShowForm(FlaskForm):
     artist_id = StringField(
         'artist_id'
     )
@@ -15,8 +17,9 @@ class ShowForm(Form):
         validators=[DataRequired()],
         default= datetime.today()
     )
+    submit = SubmitField("Create Show")
 
-class VenueForm(Form):
+class VenueForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )
@@ -31,11 +34,12 @@ class VenueForm(Form):
             ('AZ', 'AZ'),
             ('AR', 'AR'),
             ('CA', 'CA'),
-            ('CO', 'CO'),
+            ('CMR', 'CMR'),
             ('CT', 'CT'),
             ('DE', 'DE'),
             ('DC', 'DC'),
             ('FL', 'FL'),
+            ('FR', 'FR'),
             ('GA', 'GA'),
             ('HI', 'HI'),
             ('ID', 'ID'),
@@ -82,6 +86,9 @@ class VenueForm(Form):
     address = StringField(
         'address', validators=[DataRequired()]
     )
+    def validate_phone(form, field):
+        if not re.search(r"^[0-9]{3}-[0-9]{3}-[0-9]{4}$", field.data):
+            raise ValidationErr("Invalid phone number.")
     phone = StringField(
         'phone'
     )
@@ -92,7 +99,7 @@ class VenueForm(Form):
         # TODO implement enum restriction
         'genres', validators=[DataRequired()],
         choices=[
-            ('Alternative', 'Alternative'),
+            ('Gospel', 'Gospel'),
             ('Blues', 'Blues'),
             ('Classical', 'Classical'),
             ('Country', 'Country'),
@@ -110,6 +117,8 @@ class VenueForm(Form):
             ('Reggae', 'Reggae'),
             ('Rock n Roll', 'Rock n Roll'),
             ('Soul', 'Soul'),
+            ('choir', 'choir'),
+            ('hymn', 'hymn'),
             ('Other', 'Other'),
         ]
     )
@@ -125,10 +134,10 @@ class VenueForm(Form):
     seeking_description = StringField(
         'seeking_description'
     )
+    submit = SubmitField("Create Venue")
 
 
-
-class ArtistForm(Form):
+class ArtistForm(FlaskForm):
     name = StringField(
         'name', validators=[DataRequired()]
     )
@@ -143,11 +152,12 @@ class ArtistForm(Form):
             ('AZ', 'AZ'),
             ('AR', 'AR'),
             ('CA', 'CA'),
-            ('CO', 'CO'),
+            ('CMR', 'CMR'),
             ('CT', 'CT'),
             ('DE', 'DE'),
             ('DC', 'DC'),
             ('FL', 'FL'),
+            ('FR', 'FR'),
             ('GA', 'GA'),
             ('HI', 'HI'),
             ('ID', 'ID'),
@@ -191,17 +201,21 @@ class ArtistForm(Form):
             ('WY', 'WY'),
         ]
     )
+    
     phone = StringField(
         # TODO implement validation logic for state
         'phone'
     )
+    def validate_phone(form, field):
+        if not re.search(r"^[0-9]{3}-[0-9]{3}-[0-9]{4}$", field.data):
+            raise ValidationError("Invalid phone number.")
     image_link = StringField(
         'image_link'
     )
     genres = SelectMultipleField(
         'genres', validators=[DataRequired()],
         choices=[
-            ('Alternative', 'Alternative'),
+            ('Gospel', 'Gospel'),
             ('Blues', 'Blues'),
             ('Classical', 'Classical'),
             ('Country', 'Country'),
@@ -219,6 +233,8 @@ class ArtistForm(Form):
             ('Reggae', 'Reggae'),
             ('Rock n Roll', 'Rock n Roll'),
             ('Soul', 'Soul'),
+            ('choir', 'choir'),
+            ('hymn', 'hymn'),
             ('Other', 'Other'),
         ]
      )
@@ -236,4 +252,4 @@ class ArtistForm(Form):
     seeking_description = StringField(
             'seeking_description'
      )
-
+    submit = SubmitField("Create Artist") 

@@ -1,15 +1,12 @@
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, ARRAY, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 db = SQLAlchemy()
 
 
 # TODO: connect to a local postgresql database
 def db_setup(app):
-    app.config.from_object('config')
     db.app = app
     db.init_app(app)
-    migrate = Migrate(app, db)
     return db
 
 #----------------------------------------------------------------------------#
@@ -19,7 +16,7 @@ def db_setup(app):
 class Venue(db.Model):
     __tablename__ = 'venues'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
@@ -27,14 +24,15 @@ class Venue(db.Model):
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
-    description = db.Column(db.String(500), default='')
+    description = db.Column(db.String(500))
     seeking_talent = db.Column(Boolean, default=False)
     website = db.Column(String(120))
     genres = db.Column(ARRAY(String))
-    shows = db.relationship('Show', backref='Venue', lazy='dynamic')
+    shows = db.relationship('Show', backref='Venue', lazy='True')
 
-    def __init__(self, name, genres, address, city, state, phone, website, facebook_link, image_link,
+    def __init__(self, id, name, genres, address, city, state, phone, website, facebook_link, image_link,
                  seeking_talent=False, description=""):
+        self.id = id
         self.name = name
         self.genres = genres
         self.city = city
@@ -93,7 +91,7 @@ class Artist(db.Model):
     __tablename__ = 'artists'
     
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
@@ -102,14 +100,15 @@ class Artist(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean, default=False)
-    seeking_description = db.Column(db.String(120), default=' ')
+    seeking_description = db.Column(db.String(120))
     website = db.Column(db.String(120))
     shows = db.relationship('Show', backref='Artist', lazy=True)
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
-    def __init__(self, name, genres, city, state, phone, image_link, website, facebook_link,
+    def __init__(self, id, name, genres, city, state, phone, image_link, website, facebook_link,
                  seeking_venue=False, seeking_description=""):
+        self.id = id
         self.name = name
         self.genres = genres
         self.city = city
@@ -156,15 +155,15 @@ class Artist(db.Model):
 class Show(db.Model):
 
     __tablename__ = 'shows'
-    id = db.Column(Integer,primary_key=True)
-    venue_id = db.Column(Integer, ForeignKey(Venue.id), nullable=False)
-    artist_id = db.Column(Integer, ForeignKey(Artist.id), nullable=False)
+    id = db.Column(Integer,primary_key=True, autoincrement=True)
+    venues_id = db.Column(Integer, db.ForeignKey("venues.id"), nullable=False)
+    artists_id = db.Column(Integer, db.ForeignKey("artists.id"), nullable=False)
     start_time = db.Column(String(), nullable=False)
 
 
-    def __init__(self, venue_id,artist_id,start_time):
-        self.venue_id = venue_id
-        self.artist_id = artist_id
+    def __init__(self, venues_id,artists_id,start_time):
+        self.venues_id = venues_id
+        self.artists_id = artists_id
         self.start_time = start_time
 
     def insert(self):
@@ -173,29 +172,29 @@ class Show(db.Model):
 
     def detail(self):
         return{
-            'venue_id' :self.venue_id,
-            'venue_name' :self.Venue.name,
-            'artist_id' :self.artist_id,
-            'artist_name' :self.Artist.name,
-            'artist_image_link' :self.Artist.image_link,
+            'venues_id' :self.venues_id,
+            'venues_name' :self.Venue.name,
+            'artists_id' :self.artists_id,
+            'artists_name' :self.Artist.name,
+            'artists_image_link' :self.Artist.image_link,
             'start_time' :self.start_time
         }
 
-    def artist_details(self):
+    def artists_details(self):
         return{
-            'artist_id' :self.venue_id,
-            'artist_name' :self.Artist.name,
-            'artist_image_link' :self.Artist.image_link,
+            'artists_id' :self.artists_id,
+            'artists_name' :self.Artist.name,
+            'artists_image_link' :self.Artist.image_link,
             'start_time' :self.start_time
 
         }
  
     
-    def venue_details(self):
+    def venues_details(self):
         return{
-            'venue_id' :self.venue_id,
-            'venue_name' :self.Venue.name,
-            'venue_image_link' :self.Venue.image_link,
+            'venues_id' :self.venues_id,
+            'venues_name' :self.Venue.name,
+            'venues_image_link' :self.Venue.image_link,
             'start_time' :self.start_time
             
         }
