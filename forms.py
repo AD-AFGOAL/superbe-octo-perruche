@@ -34,6 +34,7 @@ class VenueForm(FlaskForm):
             ('AZ', 'AZ'),
             ('AR', 'AR'),
             ('CA', 'CA'),
+            ('CO', 'CO'),
             ('CMR', 'CMR'),
             ('CT', 'CT'),
             ('DE', 'DE'),

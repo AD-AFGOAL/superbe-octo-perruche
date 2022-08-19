@@ -5,10 +5,10 @@
 <ul class="items">
 	{% for venue in results.data %}
 	<li>
-		<a href="/venues/{{ venues.id }}">
+		<a href="/venues/{{ venue.id }}">
 			<i class="fas fa-music"></i>
 			<div class="item">
-				<h5>{{ venues.name }}</h5>
+				<h5>{{ venue.name }}</h5>
 			</div>
 		</a>
 	</li>
